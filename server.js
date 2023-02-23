@@ -15,6 +15,25 @@ app.get("/musicians/:id", async (req, res) => {
   const musician = await Musician.findByPk(req.params.id);
   await res.json(musician);
 });
+app.use(express.json());
+
+app.post("/musicians/:id", async (req, res) => {
+  const musician1 = await Musician.create(req.body);
+  await res.send(musician1);
+});
+
+app.put("/musicians/:id", async (req, res) => {
+  const musician = await Musician.update(
+    { name: "emik" },
+    { where: { id: req.params.id } }
+  );
+  await res.send(musician);
+});
+
+app.delete("/musicians/:id", async (req, res) => {
+  await Musician.destroy({ where: { id: req.params.id }, force: true });
+  await res.send("Successful DELETE Request made!");
+});
 
 app.listen(port, () => {
   sequelize.sync();
