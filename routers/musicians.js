@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Musician } = require("../models/Musician.js");
+const { check, validationResult } = require("express-validator");
 
 router.get("/", async (request, response) => {
   const musicians = await Musician.findAll();
@@ -13,10 +14,20 @@ router.get("/:id", async (req, res) => {
 });
 router.use(express.json());
 
-router.post("/", async (req, res) => {
-  const musician1 = await Musician.create(req.body);
-  await res.send(musician1);
-});
+router.post(
+  "/",
+  [check("name").not().isEmpty()],
+  [check("Instrument").not().isEmpty()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.json({ error: errors.array() });
+    } else {
+      const musician1 = await Musician.create(req.body);
+      await res.send(musician1);
+    }
+  }
+);
 
 router.put("/:id", async (req, res) => {
   const musician = await Musician.update(
