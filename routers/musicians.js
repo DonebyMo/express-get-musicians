@@ -17,6 +17,7 @@ router.use(express.json());
 router.post(
   "/",
   [check("name").not().isEmpty()],
+  [check("name").isLength({ min: 2, max: 20 })],
   [check("Instrument").not().isEmpty()],
   async (req, res) => {
     const errors = validationResult(req);
